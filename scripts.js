@@ -43,11 +43,13 @@ const success = (api) => {
     console.log('ᗧ···ᗣ···ᗣ·· Sketchfab viewer ready');
 
     // Log all annotations
-    // api.getAnnotationList((err, annotations) => {
-    //   if (!err) {
-    //     console.log(annotations)
-    //   }
-    // });
+    api.getAnnotationList((err, annotations) => {
+      if (!err) {
+        console.log('ᗧ···ᗣ···ᗣ·· Annotations: ', annotations.map((a, i) => { 
+          return { [i]: a.name }
+        }))
+      }
+    });
 
     api.addEventListener('annotationFocus', (index) => {
       console.log('ᗧ···ᗣ···ᗣ·· Reached annotation: ', index);
