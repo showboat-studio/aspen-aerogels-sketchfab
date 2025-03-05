@@ -11,11 +11,27 @@ video {
   height: 100%;
 }
 
-button {
-  position: absolute;
+.play {
+  position:fixed;
   top: 20px;
-  right: 20px;
+  left: 50%;
+  z-index: 1000;
+  color: white;
+  min-width: 100px;
+  background: rgba(0,0,0,0.2);
+  text-shadow: 0 0 10px black;
+  line-height: 30px;
+  padding: 0px 10px;
+  border-radius: 16px;
+  border-style: none;
+  font-family: 'Open Sans', sans-serif;
+  transition: opacity .25s ease-in-out;
+}
+
+.exit {
+  align-self: flex-end;
   padding: 10px;
+  margin-bottom: 5px;
   height: 20px;
   width: 20px;
   font-size: 24px;
@@ -28,20 +44,30 @@ button {
   align-items: center;
 }
 
-button:hover {
+.exit:hover {
   color: #ec3c7b;
 }
 
-.video-container {
+.video-modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: black;
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+
+.video-container {
+  width: 80%;
+  background: rgba(0,0,0,0.8);
+  padding: 10px 20px 20px 20px;
+  /* border: rgba(255,255,255,0.8) 3px solid; */
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
 }
 
 #api-frame {

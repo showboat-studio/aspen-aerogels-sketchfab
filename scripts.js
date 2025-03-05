@@ -6,6 +6,22 @@ const videos = {
 
 let iframe = document.getElementById('api-frame')
 let uid = '598aec0db3a247c784b43e22d59262be'
+let selectedAnnotation;
+
+// TODO: bug; this just keeps creating buttons on top of buttons
+const createAnnotationButton = (index) => {
+  const button = document.createElement('button');
+  button.innerText = 'Play Video'
+  button.classList.add('play');
+  button.id = `button-${index}`
+  button.addEventListener('click', () => createVideo(index));
+  document.body.appendChild(button);
+}
+
+const removeButton = (index) => {
+  console.log('remove button')
+  document.body.removeChild(document.getElementById(`button-${index}`))
+}
 
 const createVideo = (vidindex) => {
   // Look up video based on annotation index
@@ -13,6 +29,9 @@ const createVideo = (vidindex) => {
   const file = videos[vidindex];
 
   console.log('ᗧ···ᗣ···ᗣ·· Showing video: ', file)
+  const videoModal = document.createElement('div');
+  videoModal.classList.add('video-modal');
+  
   const videoContainer = document.createElement('div');
   videoContainer.classList.add('video-container');
 
@@ -22,8 +41,9 @@ const createVideo = (vidindex) => {
   video.autoplay = true;
 
   const exitButton = document.createElement('button');
+  exitButton.classList.add('exit')
   exitButton.innerHTML = `&times;`
-  exitButton.addEventListener('click', () => document.body.removeChild(videoContainer));
+  exitButton.addEventListener('click', () => document.body.removeChild(videoModal));
 
   // Auto exit the video 5 seconds after it ends
   video.addEventListener("ended", function () {
@@ -32,20 +52,24 @@ const createVideo = (vidindex) => {
     }, 5000);
   });
 
-  videoContainer.appendChild(video);
   videoContainer.appendChild(exitButton);
-  document.body.appendChild(videoContainer);
+  videoContainer.appendChild(video);
+  videoModal.appendChild(videoContainer)
+  document.body.appendChild(videoModal);
 }
 
 const success = (api) => {
   api.start();
   api.addEventListener('viewerready', () => {
     console.log('ᗧ···ᗣ···ᗣ·· Sketchfab viewer ready');
+    
+    let originalAnnotations = [];
 
     // Log all annotations
     api.getAnnotationList((err, annotations) => {
       if (!err) {
-        console.log('ᗧ···ᗣ···ᗣ·· Annotations: ', annotations.map((a, i) => { 
+        originalAnnotations = [...annotations]
+        console.log('ᗧ···ᗣ···ᗣ·· Annotations: ', originalAnnotations.map((a, i) => {
           return { [i]: a.name }
         }))
       }
@@ -53,7 +77,13 @@ const success = (api) => {
 
     api.addEventListener('annotationFocus', (index) => {
       console.log('ᗧ···ᗣ···ᗣ·· Reached annotation: ', index);
-      createVideo(index)
+
+      if (selectedAnnotation) {
+        removeButton(selectedAnnotation)
+      }
+
+      selectedAnnotation = index
+      createAnnotationButton(index)
     });
   });
 }
