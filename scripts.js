@@ -1,11 +1,13 @@
 const videos = {
-  '0': 'assets/test.mp4',
-  '1': 'assets/test.mp4',
-  '2': 'assets/test.mp4'
+  '0': 'assets/Increase_Liquid_Yield.mp4',
+  '1': 'assets/Minimize_Downtime.mp4',
+  '2': 'assets/CUI.mp4',
+  '3': 'assets/Survive_the_Harshest_Conditions.mp4',
+  '4': 'assets/Larger_Drum_Capacity.mp4'
 }
 
 let iframe = document.getElementById('api-frame')
-let uid = '598aec0db3a247c784b43e22d59262be'
+let uid = '216000087b66472b8b0315a6189825b2'
 let selectedAnnotation;
 
 // TODO: bug; this just keeps creating buttons on top of buttons
