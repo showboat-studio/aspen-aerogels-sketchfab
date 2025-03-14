@@ -1,13 +1,13 @@
 const videos = {
-  '0': 'assets/Increase_Liquid_Yield.mp4',
-  '1': 'assets/Minimize_Downtime.mp4',
-  '2': 'assets/CUI.mp4',
+  '0': 'assets/Minimize_Downtime.mp4',
+  '1': 'assets/CUI.mp4',
+  '2': 'assets/Larger_Drum_Capacity.mp4',
   '3': 'assets/Survive_the_Harshest_Conditions.mp4',
-  '4': 'assets/Larger_Drum_Capacity.mp4'
+  '4': 'assets/Increase_Liquid_Yield.mp4'
 }
 
 let iframe = document.getElementById('api-frame')
-let uid = '46e95ba002394dcd8a9032d34c4b7a96'
+let uid = '1a14647a028c4783bebe1bdd0edcff8f'
 let selectedAnnotation;
 
 // TODO: bug; this just keeps creating buttons on top of buttons
@@ -100,6 +100,9 @@ client.init(uid, {
   error,
   preload: 1,       // Preloads textures before display
   camera: 0,        // Disables automatic camera animation
+  autospin: 0,
   ui_hint: "low",   // Hints at using lower settings for better performance
-  autostart: 1,     // Auto-starts the model without user interaction
+  autostart: 1,   // Auto-starts the model without user interaction
+  annotation: 0,
+  // annotation_cycle: 8,     
 })
