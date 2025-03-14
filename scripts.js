@@ -7,7 +7,7 @@ const videos = {
 }
 
 let iframe = document.getElementById('api-frame')
-let uid = '216000087b66472b8b0315a6189825b2'
+let uid = '46e95ba002394dcd8a9032d34c4b7a96'
 let selectedAnnotation;
 
 // TODO: bug; this just keeps creating buttons on top of buttons
@@ -97,5 +97,9 @@ const client = new Sketchfab('1.12.1', iframe);
 
 client.init(uid, {
   success,
-  error
+  error,
+  preload: 1,       // Preloads textures before display
+  camera: 0,        // Disables automatic camera animation
+  ui_hint: "low",   // Hints at using lower settings for better performance
+  autostart: 1,     // Auto-starts the model without user interaction
 })
