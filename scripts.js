@@ -5,7 +5,7 @@ const videos = {
 }
 
 let iframe = document.getElementById('api-frame')
-let uid = '598aec0db3a247c784b43e22d59262be'
+let uid = '216000087b66472b8b0315a6189825b2'
 let selectedAnnotation;
 
 // TODO: bug; this just keeps creating buttons on top of buttons
@@ -59,7 +59,7 @@ const createVideo = (vidindex) => {
 }
 
 const success = (api) => {
-  api.start();
+  api.start(() => console.log('ᗧ···ᗣ···ᗣ·· Sketchfab viewer started'));
   api.addEventListener('viewerready', () => {
     console.log('ᗧ···ᗣ···ᗣ·· Sketchfab viewer ready');
     
@@ -91,9 +91,9 @@ const success = (api) => {
 const error = (e) => console.error('ᗧ···ᗣ···ᗣ·· Sketchfab viewer error: ', e)
 
 console.log('ᗧ···ᗣ···ᗣ·· Initializing Sketchfab client')
-const client = new Sketchfab('1.12.1', iframe);
+const client = new Sketchfab(iframe);
 
 client.init(uid, {
   success,
-  error
+  error,
 })
