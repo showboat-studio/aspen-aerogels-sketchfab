@@ -14,6 +14,7 @@ let cycling = false; // Track if cycling is active or paused
 let apiInstance = null; // Store API instance globally
 let annotationTransitioning = false; // Track annotation-based camera movement
 
+// TODO: bug; this just keeps creating buttons on top of buttons
 const createAnnotationButton = (index) => {
   removeButton(); // Ensure only one button exists
 
