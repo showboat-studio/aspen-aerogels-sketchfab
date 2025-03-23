@@ -8,6 +8,9 @@ window.restartTimer;
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
 
+window.cycling = true;
+let autoplay = true;
+
 const success = (api) => {
   api.start();
 
@@ -28,28 +31,47 @@ const success = (api) => {
       }
     });
 
+    api.addEventListener('camerastart', () => {
+      console.log('[EVENT] Camera start');
+      autoplay = false;
+    });
+
     api.addEventListener('annotationFocus', (index) => {
       console.log('[EVENT] Focused on annotation:', index);
       currentAnnotationIndex = index;
-      createVideo(index);
+      createVideo(index, !window.cycling);
+
+      if (window.cycling) {
+        autoplay = true;
+      }
+
+      window.cycling = false;
     });
 
     document.addEventListener('videoAnnotationEnded', (event) => {
       console.log('[EVENT] Annotation Video Ended:', event.detail.message);
-      api.unselectAnnotation((err) => {
-        if (!err) {
-          console.log('[EVENT] Unselected annotations');
-        }
-      });
+
+      if (autoplay) {
+        api.unselectAnnotation((err) => {
+          if (!err) {
+            console.log('[EVENT] Unselected annotations');
+          }
+        });
+      }
 
       currentAnnotationIndex = event.detail.message + 1
     });
 
     api.addEventListener('annotationBlur', (index) => {
-      console.log('[EVENT] Closed annotation:', index);
+      console.log('[EVENT] Closed annotation:', {
+        index,
+        cycling: window.cycling,
+        autoplay
+      });
       removeVideo(index);
 
-      if (window.isAutoplay) {
+      if (autoplay) {
+        window.cycling = true;
         cycleAnnotations(api, currentAnnotationIndex, annotationLength);
       } else {
         startCycleTimeout(api, currentAnnotationIndex, annotationLength);
@@ -57,18 +79,13 @@ const success = (api) => {
     });
 
     api.addEventListener('click', () => {
-      console.log('[EVENT] Click: user has clicked the iframe');
-      window.isAutoplay = false;
+      console.log('[EVENT] Click: user has clicked the iframe:', {
+        cycling: window.cycling,
+        autoplay: false,
+      });
+      autoplay = false;
       startCycleTimeout(api, currentAnnotationIndex, annotationLength);
     });
-
-    // Detect user interaction by any mouse movement over the iframe
-    api.addEventListener('nodeMouseEnter', () => {
-      console.log('[EVENT] Mouse enter: user has moused over the iframe');
-      window.isAutoplay = false;
-      startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-    })
-
   });
 };
 
