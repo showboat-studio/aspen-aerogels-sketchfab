@@ -7,7 +7,6 @@ const cycleAnnotations = (api, currentIndex, annLength) => {
   if (currentIndex + 1 > annLength) currentIndex = 0;
   api.gotoAnnotation(currentIndex, { preventCameraMove: false }, (err, index) => {
     clearTimeout();
-    window.isAutoplay = true;
     console.log(err ? '[EVENT ERROR] Tried to go to annotation:' : '[EVENT] Go to annotation:', index);
   });
 }
@@ -17,6 +16,7 @@ const startCycleTimeout = (api, index, annLength) => {
   window.restartTimer = setTimeout(() => {
     console.log('[CYCLE] Restarting annotation cycling');
     cycleAnnotations(api, index + 1, annLength);
+    window.cycling = true;
   }, 45000)
 }
 

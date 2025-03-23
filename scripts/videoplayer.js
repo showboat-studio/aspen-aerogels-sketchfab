@@ -20,7 +20,7 @@ const removeVideo = (vidindex) => {
   }, 1000);
 }
 
-const createVideo = (vidindex) => {
+const createVideo = (vidindex, loop) => {
   const file = videos[vidindex];
   if (!file) return console.log('[VIDEO] Invalid video key:', vidindex);
 
@@ -34,6 +34,7 @@ const createVideo = (vidindex) => {
   video.src = file;
   video.controls = false;
   video.autoplay = true;
+  video.loop = loop;
 
   const exitButton = document.createElement('button');
   exitButton.classList.add('exit');
