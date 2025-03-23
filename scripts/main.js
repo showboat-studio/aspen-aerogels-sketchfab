@@ -34,8 +34,7 @@ const success = (api) => {
     api.addEventListener('camerastart', () => {
       console.log('[EVENT] Camera start');
       autoplay = false;
-      removeVideo(currentAnnotationIndex);
-    })
+    });
 
     api.addEventListener('annotationFocus', (index) => {
       console.log('[EVENT] Focused on annotation:', index);
