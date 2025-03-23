@@ -1,6 +1,5 @@
 const clearCycleTimeout = () => {
   clearTimeout(window.restartTimer);
-  console.log('[CYCLE] Clear cycle timeout');
 }
 
 const cycleAnnotations = (api, currentIndex, annLength) => {
@@ -9,14 +8,14 @@ const cycleAnnotations = (api, currentIndex, annLength) => {
   api.gotoAnnotation(currentIndex, { preventCameraMove: false }, (err, index) => {
     clearTimeout();
     window.isAutoplay = true;
-    console.log(err ? '[EVENT ERROR] gotoAnnotation:' : '[EVENT] gotoAnnotation:', index);
+    console.log(err ? '[EVENT ERROR] Tried to go to annotation:' : '[EVENT] Go to annotation:', index);
   });
 }
 
-const startCycleTimeout = (api, index, annLength, from = 'annotations.js') => {
+const startCycleTimeout = (api, index, annLength) => {
   clearCycleTimeout();
   window.restartTimer = setTimeout(() => {
-    console.log('[CYCLE] Restarting cycle', from);
+    console.log('[CYCLE] Restarting annotation cycling');
     cycleAnnotations(api, index + 1, annLength);
   }, 45000)
 }

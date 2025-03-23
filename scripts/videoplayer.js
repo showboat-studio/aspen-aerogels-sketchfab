@@ -6,8 +6,8 @@ const videos = {
   '4': 'assets/Increase_Liquid_Yield.mp4'
 };
 
-const removeVideo = (vidindex, from = 'videoplayer.js') => {
-  console.log('[VIDEO] removeVideo: ', vidindex, from)
+const removeVideo = (vidindex) => {
+  console.log('[VIDEO] removeVideo: ', vidindex)
   const vidContainer = document.getElementById(`video-container-${vidindex}`);
   const videoModal = document.getElementById(`video-modal`);
   videoModal.classList.remove('video-in');
