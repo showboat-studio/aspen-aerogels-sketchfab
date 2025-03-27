@@ -14,7 +14,7 @@ const cycleAnnotations = (api, currentIndex, annLength) => {
 const startCycleTimeout = (api, index, annLength) => {
   clearCycleTimeout();
   window.restartTimer = setTimeout(() => {
-    console.log('[CYCLE] Restarting annotation cycling');
+    console.log('[CYCLE] Restarting annotation cycling', index);
     cycleAnnotations(api, index + 1, annLength);
     window.cycling = true;
   }, 45000)
