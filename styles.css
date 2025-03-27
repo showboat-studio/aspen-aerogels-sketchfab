@@ -92,8 +92,9 @@ video {
   border: none;
 }
 
-/* Mobile: Slide from bottom */
-@media (max-width: 600px) {
+/* Mobile and iPad Vertical: Slide from bottom */
+@media (max-width: 1024px) and (orientation: portrait) {
+
   .video-modal {
     top: auto;
     bottom: -100vh;
