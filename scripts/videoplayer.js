@@ -49,6 +49,8 @@ const createVideo = (vidindex, loop, api, annLength) => {
   video.autoplay = true;
   video.loop = loop;
   video.muted = true;
+  video.playsInline = true;
+  video.setAttribute('playsinline', '');
 
   const exitButton = document.createElement('button');
   exitButton.classList.add('exit');
@@ -63,26 +65,24 @@ const createVideo = (vidindex, loop, api, annLength) => {
   const prevButton = document.createElement('button');
   prevButton.innerHTML = '<span class="exit-text">&lt; Previous</span>';
   prevButton.classList.add('exit');
+  /*
   prevButton.addEventListener('click', () => {
     const newIndex = (vidindex - 1 + annLength) % annLength;
     removeVideo(vidindex);
-    setTimeout(() => {
-      console.log('Going to previous annotation:', newIndex);
-      api.gotoAnnotation(newIndex);
-    }, 100);
+    api.gotoAnnotation(newIndex);
   });
+*/
 
   const nextButton = document.createElement('button');
   nextButton.innerHTML = '<span class="exit-text">Next &gt;</span>';
   nextButton.classList.add('exit');
+  /*
   nextButton.addEventListener('click', () => {
     const newIndex = (vidindex + 1) % annLength;
     removeVideo(vidindex);
-    setTimeout(() => {
-      console.log('Going to next annotation:', newIndex);
-      api.gotoAnnotation(newIndex);
-    }, 100);
+    api.gotoAnnotation(newIndex);
   });
+*/
 
   controlsContainer.appendChild(prevButton);
   controlsContainer.appendChild(nextButton);
