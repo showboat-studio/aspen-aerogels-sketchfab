@@ -61,31 +61,30 @@ const createVideo = (vidindex, loop, api, annLength) => {
   controlsContainer.style.display = 'flex';
   controlsContainer.style.justifyContent = 'space-between';
   controlsContainer.style.marginTop = '10px';
-
+ 
+ /*
   const prevButton = document.createElement('button');
   prevButton.innerHTML = '<span class="exit-text">&lt; Previous</span>';
   prevButton.classList.add('exit');
-  /*
   prevButton.addEventListener('click', () => {
     const newIndex = (vidindex - 1 + annLength) % annLength;
     removeVideo(vidindex);
     api.gotoAnnotation(newIndex);
   });
-*/
 
   const nextButton = document.createElement('button');
   nextButton.innerHTML = '<span class="exit-text">Next &gt;</span>';
   nextButton.classList.add('exit');
-  /*
   nextButton.addEventListener('click', () => {
     const newIndex = (vidindex + 1) % annLength;
     removeVideo(vidindex);
     api.gotoAnnotation(newIndex);
   });
-*/
 
   controlsContainer.appendChild(prevButton);
   controlsContainer.appendChild(nextButton);
+
+  */
 
   const customEvent = new CustomEvent('videoAnnotationEnded', {
     detail: { index: vidindex }
