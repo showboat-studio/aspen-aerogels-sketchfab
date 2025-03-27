@@ -39,6 +39,11 @@ const success = (api) => {
     api.addEventListener('annotationFocus', (index) => {
       console.log('[EVENT] Focused on annotation:', index);
       currentAnnotationIndex = index;
+
+      if (!!window.cycling) {
+        startCycleTimeout(api, currentAnnotationIndex, annotationLength);
+      }
+
       createVideo(index, !window.cycling);
 
       if (window.cycling) {
