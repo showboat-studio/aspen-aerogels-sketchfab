@@ -1,3 +1,5 @@
+
+// main.js
 import { AppState } from './AppState.js';
 import { cycleAnnotations, startCycleTimeout } from './annotations.js';
 import { createVideo, removeVideo } from './videoplayer.js';
@@ -7,30 +9,30 @@ const uid = '1a14647a028c4783bebe1bdd0edcff8f';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
-
-const onUserCameraMove = (api) => {
-  console.log('[USER ACTION] User moved the camera');
-  AppState.cycling = false;
-  AppState.ignoreCameraMovement = false;
-
-  handleAnnotationBlur(api, currentAnnotationIndex);
-};
+let autoplay = true;
 
 const handleAnnotationFocus = (api, index) => {
   console.log('[EVENT] Focused on annotation:', index);
   currentAnnotationIndex = index;
 
-  AppState.ignoreCameraMovement = false;
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-  createVideo(index, !AppState.cycling); // loop if not cycling
+
+  createVideo(index, !AppState.cycling);
+  autoplay = AppState.cycling;
   AppState.cycling = false;
 };
 
 const handleAnnotationBlur = (api, index) => {
-  console.log('[EVENT] Closed annotation:', { index, cycling: AppState.cycling });
+  console.log('[EVENT] Closed annotation:', {
+    index,
+    cycling: AppState.cycling,
+    autoplay
+  });
+
   removeVideo(index);
 
-  if (AppState.cycling) {
+  if (autoplay) {
+    AppState.cycling = true;
     cycleAnnotations(api, currentAnnotationIndex, annotationLength);
   } else {
     startCycleTimeout(api, currentAnnotationIndex, annotationLength);
@@ -39,11 +41,9 @@ const handleAnnotationBlur = (api, index) => {
 
 const handleVideoAnnotationEnded = (api) => (event) => {
   const nextIndex = event.detail?.index;
-  console.log('[handleVideoAnnotationEnded] Annotation Video Ended:', nextIndex);
-  AppState.cycling = true;
-  console.log('[handleVideoAnnotationEnded] Cycling =', AppState.cycling);
+  console.log('[EVENT] Annotation Video Ended:', nextIndex);
 
-  if (AppState.cycling) {
+  if (autoplay) {
     api.unselectAnnotation((err) => {
       if (!err) {
         console.log('[EVENT] Unselected annotations');
@@ -56,10 +56,11 @@ const handleVideoAnnotationEnded = (api) => (event) => {
   }
 };
 
-
 const handleClick = (api) => {
-  console.log('[EVENT] Click: user has clicked the iframe');
-  AppState.cycling = false;
+  console.log('[EVENT] Click: user has clicked the iframe:', {
+    cycling: AppState.cycling
+  });
+  autoplay = false;
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
 };
 
@@ -83,15 +84,8 @@ const success = (api) => {
     });
 
     api.addEventListener('camerastart', () => {
-      console.log('[camerastart] camerastart triggered — ignoreCameraMovement =', AppState.ignoreCameraMovement);
-      console.log('[camerastart] Cycling =', AppState.cycling);
-
-      if (AppState.ignoreCameraMovement) {
-        console.log('[DEBUG] Ignoring camera movement (from auto transition)');
-        return;
-      }
-
-      onUserCameraMove(api);
+      console.log('[EVENT] Camera start');
+      autoplay = false;
     });
 
     api.addEventListener('annotationFocus', (index) => handleAnnotationFocus(api, index));
@@ -113,9 +107,6 @@ client.init(uid, {
   camera: 0,
   autospin: 0,
   ui_hint: 2,
-  ui_controls: 1,
-  ui_watermark: 0,
-  ui_infos: 1,
   autostart: 1,
   annotation: 0
 });
