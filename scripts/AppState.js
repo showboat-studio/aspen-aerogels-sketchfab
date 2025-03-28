@@ -1,5 +1,7 @@
-// AppState.js
 export const AppState = {
   cycling: true,
-  restartTimer: null
+  restartTimer: null,
+  userInteracted: false,
+  ignoreCameraMovement: false,
+  annotationTransitioning: false
 };

@@ -27,7 +27,7 @@ const removeVideo = (vidindex) => {
   }, 1000);
 };
 
-const createVideo = (vidindex, loop, api, annLength) => {
+const createVideo = (vidindex, loop) => {
   const file = videos[vidindex];
   if (!file) {
     console.warn('[VIDEO] Invalid video key:', vidindex);
@@ -48,43 +48,12 @@ const createVideo = (vidindex, loop, api, annLength) => {
   video.controls = false;
   video.autoplay = true;
   video.loop = loop;
-  video.muted = true;
-  video.playsInline = true;
-  video.setAttribute('playsinline', '');
+  video.muted = true; // Allow autoplay on page load
 
   const exitButton = document.createElement('button');
   exitButton.classList.add('exit');
   exitButton.innerHTML = '<span class="exit-text">Close</span><span>&times;</span>';
   exitButton.addEventListener('click', () => removeVideo(vidindex));
-
-  const controlsContainer = document.createElement('div');
-  controlsContainer.style.display = 'flex';
-  controlsContainer.style.justifyContent = 'space-between';
-  controlsContainer.style.marginTop = '10px';
- 
- /*
-  const prevButton = document.createElement('button');
-  prevButton.innerHTML = '<span class="exit-text">&lt; Previous</span>';
-  prevButton.classList.add('exit');
-  prevButton.addEventListener('click', () => {
-    const newIndex = (vidindex - 1 + annLength) % annLength;
-    removeVideo(vidindex);
-    api.gotoAnnotation(newIndex);
-  });
-
-  const nextButton = document.createElement('button');
-  nextButton.innerHTML = '<span class="exit-text">Next &gt;</span>';
-  nextButton.classList.add('exit');
-  nextButton.addEventListener('click', () => {
-    const newIndex = (vidindex + 1) % annLength;
-    removeVideo(vidindex);
-    api.gotoAnnotation(newIndex);
-  });
-
-  controlsContainer.appendChild(prevButton);
-  controlsContainer.appendChild(nextButton);
-
-  */
 
   const customEvent = new CustomEvent('videoAnnotationEnded', {
     detail: { index: vidindex }
@@ -95,7 +64,7 @@ const createVideo = (vidindex, loop, api, annLength) => {
     document.dispatchEvent(customEvent);
   });
 
-  videoContainer.append(exitButton, video, controlsContainer);
+  videoContainer.append(exitButton, video);
   videoModal.appendChild(videoContainer);
   videoModal.classList.remove('video-out');
   videoModal.classList.add('video-in');
