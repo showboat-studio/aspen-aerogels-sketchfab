@@ -1,13 +1,13 @@
 import { AppState } from './AppState.js';
 import { cycleAnnotations, startCycleTimeout } from './annotations.js';
 import { createVideo, removeVideo } from './videoplayer.js';
+import { CycleConfig } from './annotations.js';
 
 const iframe = document.getElementById('api-frame');
 const uid = '1a14647a028c4783bebe1bdd0edcff8f';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
-let waitingToForcePlay = true;
 
 const onUserCameraMove = (api) => {
   console.log('[USER ACTION] User moved the camera');
@@ -25,21 +25,6 @@ const handleAnnotationFocus = (api, index) => {
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
   createVideo(index, !AppState.cycling); // loop if not cycling
   AppState.cycling = false;
-
-  // Optional: attempt to force play in case autoplay is blocked
-  if (waitingToForcePlay && index === 0) {
-    setTimeout(() => {
-      const video = document.querySelector(`#video-container-0 video`);
-      if (video) {
-        video.play().then(() => {
-          console.log('[VIDEO] First video manually played');
-        }).catch((err) => {
-          console.warn('[VIDEO] First video failed to play:', err);
-        });
-      }
-      waitingToForcePlay = false;
-    }, 500); // give DOM a moment to finish rendering
-  }
 };
 
 const handleAnnotationBlur = (api, index) => {
@@ -94,7 +79,6 @@ const success = (api) => {
       if (!err) {
         console.log('[ANNOTATIONS] List:', annotations.map((a, i) => ({ [i]: a.name })));
         annotationLength = annotations.length;
-
         setTimeout(() => {
           cycleAnnotations(api, 0, annotationLength);
         }, 5000);
