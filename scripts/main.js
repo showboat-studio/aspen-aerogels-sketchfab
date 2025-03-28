@@ -78,6 +78,7 @@ const success = (api) => {
       if (!err) {
         console.log('[ANNOTATIONS] List:', annotations.map((a, i) => ({ [i]: a.name })));
         annotationLength = annotations.length;
+        AppState.cycling = true;
         setTimeout(() => {
           cycleAnnotations(api, 0, annotationLength);
         }, 5000);
