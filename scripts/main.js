@@ -1,6 +1,7 @@
 import { AppState } from './AppState.js';
 import { cycleAnnotations, startCycleTimeout } from './annotations.js';
 import { createVideo, removeVideo } from './videoplayer.js';
+import { CycleConfig } from './annotations.js';
 
 const iframe = document.getElementById('api-frame');
 const uid = '1a14647a028c4783bebe1bdd0edcff8f';
@@ -22,9 +23,16 @@ const handleAnnotationFocus = (api, index) => {
 
   AppState.ignoreCameraMovement = false;
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-  createVideo(index, !AppState.cycling); // loop if not cycling
+  createVideo(index, !AppState.cycling);
   AppState.cycling = false;
+
+  // ✅ Set delay to 45 seconds after the first annotation focus
+  if (CycleConfig.delay !== 45000) {
+    CycleConfig.delay = 45000;
+    console.log('[CYCLE] Delay set to 45000ms in handleAnnotationFocus');
+  }
 };
+
 
 const handleAnnotationBlur = (api, index) => {
   console.log('[EVENT] Closed annotation:', { index, cycling: AppState.cycling });

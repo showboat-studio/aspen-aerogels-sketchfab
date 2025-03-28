@@ -18,9 +18,6 @@ const cycleAnnotations = (api, currentIndex, annLength) => {
 
   api.gotoAnnotation(currentIndex, { preventCameraMove: false }, (err, index) => {
     console.log(err ? '[EVENT ERROR] Tried to go to annotation:' : '[EVENT] Go to annotation:', index);
-
-    CycleConfig.delay = 45000;
-    console.log('[CYCLE] Delay changed to 45000ms');
   });
 };
 
