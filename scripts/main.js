@@ -7,7 +7,7 @@ const uid = '1a14647a028c4783bebe1bdd0edcff8f';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
-let firstLoad = true;
+let waitingToForcePlay = true;
 
 const onUserCameraMove = (api) => {
   console.log('[USER ACTION] User moved the camera');
@@ -23,16 +23,34 @@ const handleAnnotationFocus = (api, index) => {
 
   AppState.ignoreCameraMovement = false;
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-
-  const delay = (firstLoad && index === 0) ? 400 : 0;
-  setTimeout(() => {
-    createVideo(index, !AppState.cycling);
-    firstLoad = false; // prevent future delays
-  }, delay);
-
+  createVideo(index, !AppState.cycling); // loop if not cycling
   AppState.cycling = false;
-};
 
+  // Optional: attempt to force play in case autoplay is blocked
+  if (waitingToForcePlay && index === 0) {
+    setTimeout(() => {
+      const video = document.querySelector(`#video-container-0 video`);
+      if (video) {
+        // Reattach the ended event manually in case iOS autoplay was skipped
+        video.addEventListener('ended', () => {
+          console.log('[VIDEO] Forced video ended');
+          const customEvent = new CustomEvent('videoAnnotationEnded', {
+            detail: { index: 0 }
+          });
+          document.dispatchEvent(customEvent);
+        });
+
+        video.play().then(() => {
+          console.log('[VIDEO] First video manually played');
+        }).catch((err) => {
+          console.warn('[VIDEO] First video failed to play:', err);
+        });
+      }
+      waitingToForcePlay = false;
+    }, 500);
+  }
+
+};
 
 const handleAnnotationBlur = (api, index) => {
   console.log('[EVENT] Closed annotation:', { index, cycling: AppState.cycling });
@@ -86,6 +104,7 @@ const success = (api) => {
       if (!err) {
         console.log('[ANNOTATIONS] List:', annotations.map((a, i) => ({ [i]: a.name })));
         annotationLength = annotations.length;
+
         setTimeout(() => {
           cycleAnnotations(api, 0, annotationLength);
         }, 5000);
