@@ -7,12 +7,12 @@ const uid = '1a14647a028c4783bebe1bdd0edcff8f';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
+let timeoutDuration = 5000; // start with 5s timeout
 
 const onUserCameraMove = (api) => {
   console.log('[USER ACTION] User moved the camera');
   AppState.cycling = false;
   AppState.ignoreCameraMovement = false;
-
   handleAnnotationBlur(api, currentAnnotationIndex);
 };
 
@@ -21,9 +21,10 @@ const handleAnnotationFocus = (api, index) => {
   currentAnnotationIndex = index;
 
   AppState.ignoreCameraMovement = false;
-  startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-  createVideo(index, !AppState.cycling); // loop if not cycling
+  createVideo(index, !AppState.cycling);
   AppState.cycling = false;
+  timeoutDuration = 45000; // switch to longer timeout after first annotation
+  startCycleTimeout(api, currentAnnotationIndex, annotationLength, timeoutDuration);
 };
 
 const handleAnnotationBlur = (api, index) => {
@@ -33,7 +34,7 @@ const handleAnnotationBlur = (api, index) => {
   if (AppState.cycling) {
     cycleAnnotations(api, currentAnnotationIndex, annotationLength);
   } else {
-    startCycleTimeout(api, currentAnnotationIndex, annotationLength);
+    startCycleTimeout(api, currentAnnotationIndex, annotationLength, timeoutDuration);
   }
 };
 
@@ -41,13 +42,10 @@ const handleVideoAnnotationEnded = (api) => (event) => {
   const nextIndex = event.detail?.index;
   console.log('[handleVideoAnnotationEnded] Annotation Video Ended:', nextIndex);
   AppState.cycling = true;
-  console.log('[handleVideoAnnotationEnded] Cycling =', AppState.cycling);
 
   if (AppState.cycling) {
     api.unselectAnnotation((err) => {
-      if (!err) {
-        console.log('[EVENT] Unselected annotations');
-      }
+      if (!err) console.log('[EVENT] Unselected annotations');
     });
   }
 
@@ -56,15 +54,15 @@ const handleVideoAnnotationEnded = (api) => (event) => {
   }
 };
 
-
 const handleClick = (api) => {
   console.log('[EVENT] Click: user has clicked the iframe');
   AppState.cycling = false;
-  startCycleTimeout(api, currentAnnotationIndex, annotationLength);
+  timeoutDuration = 45000;
+  startCycleTimeout(api, currentAnnotationIndex, annotationLength, timeoutDuration);
 };
 
 const success = (api) => {
-  api.start();
+  AppState.cycling = false; // start with cycling off
 
   const videoModal = document.createElement('div');
   videoModal.classList.add('video-modal', 'video-out');
@@ -76,24 +74,13 @@ const success = (api) => {
 
     api.getAnnotationList((err, annotations) => {
       if (!err) {
-        console.log('[ANNOTATIONS] List:', annotations.map((a, i) => ({ [i]: a.name })));
         annotationLength = annotations.length;
-        setTimeout(() => {
-          cycleAnnotations(api, 0, annotationLength);
-        }, 5000);
+        startCycleTimeout(api, -1, annotationLength, timeoutDuration);
       }
     });
 
     api.addEventListener('camerastart', () => {
-      console.log('[camerastart] camerastart triggered — ignoreCameraMovement =', AppState.ignoreCameraMovement);
-      console.log('[camerastart] Cycling =', AppState.cycling);
-
-      if (AppState.ignoreCameraMovement) {
-        console.log('[DEBUG] Ignoring camera movement (from auto transition)');
-        return;
-      }
-
-      onUserCameraMove(api);
+      if (!AppState.ignoreCameraMovement) onUserCameraMove(api);
     });
 
     api.addEventListener('annotationFocus', (index) => handleAnnotationFocus(api, index));
@@ -112,7 +99,6 @@ client.init(uid, {
   success,
   error,
   preload: 1,
-  //camera: 0, //this would disable the spin animation on load
   autospin: 0,
   ui_hint: 2,
   ui_controls: 1,

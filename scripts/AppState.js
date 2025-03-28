@@ -1,5 +1,5 @@
 export const AppState = {
-  cycling: true,
+  cycling: false,
   restartTimer: null,
   userInteracted: false,
   ignoreCameraMovement: false,

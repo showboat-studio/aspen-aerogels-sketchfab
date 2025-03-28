@@ -21,13 +21,13 @@ const cycleAnnotations = (api, currentIndex, annLength) => {
 };
 
 
-const startCycleTimeout = (api, index, annLength) => {
-  clearCycleTimeout();
+const startCycleTimeout = (api, index, annLength, timeoutDuration = 45000) => {
+  clearTimeout(AppState.restartTimer);
   AppState.restartTimer = setTimeout(() => {
     console.log('[CYCLE] Restarting annotation cycling', index);
     AppState.cycling = true;
     cycleAnnotations(api, index + 1, annLength);
-  }, 45000);
+  }, timeoutDuration);
 };
 
 export { cycleAnnotations, clearCycleTimeout, startCycleTimeout };
