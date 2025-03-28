@@ -3,7 +3,7 @@ import { cycleAnnotations, startCycleTimeout } from './annotations.js';
 import { createVideo, removeVideo } from './videoplayer.js';
 
 const iframe = document.getElementById('api-frame');
-const uid = '1a14647a028c4783bebe1bdd0edcff8f';
+const uid = '7c43cf49d0f44e69abfdb2682f580832';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
