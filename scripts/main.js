@@ -7,6 +7,7 @@ const uid = '1a14647a028c4783bebe1bdd0edcff8f';
 
 let annotationLength = 4;
 let currentAnnotationIndex = 0;
+let firstLoad = true;
 
 const onUserCameraMove = (api) => {
   console.log('[USER ACTION] User moved the camera');
@@ -22,9 +23,16 @@ const handleAnnotationFocus = (api, index) => {
 
   AppState.ignoreCameraMovement = false;
   startCycleTimeout(api, currentAnnotationIndex, annotationLength);
-  createVideo(index, !AppState.cycling); // loop if not cycling
+
+  const delay = (firstLoad && index === 0) ? 400 : 0;
+  setTimeout(() => {
+    createVideo(index, !AppState.cycling);
+    firstLoad = false; // prevent future delays
+  }, delay);
+
   AppState.cycling = false;
 };
+
 
 const handleAnnotationBlur = (api, index) => {
   console.log('[EVENT] Closed annotation:', { index, cycling: AppState.cycling });
@@ -78,7 +86,6 @@ const success = (api) => {
       if (!err) {
         console.log('[ANNOTATIONS] List:', annotations.map((a, i) => ({ [i]: a.name })));
         annotationLength = annotations.length;
-        AppState.cycling = true;
         setTimeout(() => {
           cycleAnnotations(api, 0, annotationLength);
         }, 5000);
