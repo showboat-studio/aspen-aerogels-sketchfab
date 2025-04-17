@@ -103,7 +103,8 @@ client.init(uid, {
   ui_hint: 2,
   ui_controls: 1,
   ui_watermark: 0,
-  ui_infos: 1,
+  ui_infos: 0,
+  ui_watermark_link: 0,
   autostart: 1,
   annotation: 0
 });
